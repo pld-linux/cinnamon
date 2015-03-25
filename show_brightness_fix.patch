@@ -1,0 +1,11 @@
+--- a/files/usr/lib/cinnamon-settings/modules/cs_power.py	2014-11-26 10:02:59.000000000 +0000
++++ b/files/usr/lib/cinnamon-settings/modules/cs_power.py	2014-12-02 10:20:08.218282012 +0000
+@@ -57,7 +57,7 @@ class Module:
+                 screen = CinnamonDesktop.RRScreen.new(Gdk.Screen.get_default())
+                 outputs = CinnamonDesktop.RRScreen.list_outputs(screen)
+                 for output in outputs:
+-                    if (output.is_connected() and output.is_laptop() and output.get_backlight_min() >= 0 and output.get_backlight_max() > 0):
++                    if (output.is_connected() and output.is_laptop()):
+                         primary_output = output
+                         break
+             except Exception, detail:

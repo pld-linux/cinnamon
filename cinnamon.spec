@@ -14,7 +14,6 @@ Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{vers
 # Source0-md5:	3ef4250eb889c4f8e99e85601a6d750d
 Source1:	polkit-%{name}-authentication-agent-1.desktop
 Source2:	%{name}-fedora.gschema.override
-Source3:	%{name}-fedora-20.gschema.override
 Patch0:		background.patch
 Patch1:		autostart.patch
 Patch2:		%{name}-settings-apps.patch

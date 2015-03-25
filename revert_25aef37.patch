@@ -1,0 +1,27 @@
+--- a/files/usr/lib/cinnamon-settings-users/cinnamon-settings-users.py	2014-09-30 09:55:06.000000000 +0100
++++ b/files/usr/lib/cinnamon-settings-users/cinnamon-settings-users.py	2014-09-30 19:20:48.151829597 +0100
+@@ -45,10 +45,9 @@ class GroupDialog (Gtk.Dialog):
+             print detail        
+ 
+     def _on_entry_changed(self, entry):
+-        name = entry.get_text()
+-        if " " in name or name.lower() != name:
++        if " " in entry.get_text():
+             entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_WARNING)
+-            entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("The group name cannot contain upper-case or space characters"))
++            entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("The group name cannot contain space characters"))
+             self.set_response_sensitive(Gtk.ResponseType.OK, False)
+         else:
+             entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, None)
+@@ -314,9 +313,9 @@ class NewUserDialog(Gtk.Dialog):
+         fullname = self.realname_entry.get_text()
+         username = self.username_entry.get_text()
+         valid = True
+-        if " " in username or username.lower() != username:
++        if " " in username:
+             self.username_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_WARNING)
+-            self.username_entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("The username cannot contain upper-case or space characters"))
++            self.username_entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("The username cannot contain space characters"))
+             valid = False
+         else:
+             self.username_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, None)                        
