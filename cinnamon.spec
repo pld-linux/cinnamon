@@ -1,263 +1,300 @@
-%define	_internel_version  a8b1a03
-%define clutter_version 1.4.0
-%define gobject_introspection_version 0.10.1
-%define muffin_version 1.0.2
-%define eds_version 2.91.6
+%define clutter_version 1.12.2
+%define cjs_version 2.3.1
+%define cinnamon_desktop_version 2.3.0
+%define gobject_introspection_version 1.34.2
+%define muffin_version 2.3.0
 %define json_glib_version 0.13.2
 Summary:	Window management and application launching for GNOME
 Name:		cinnamon
-Version:	1.4.0
-Release:	0.2
-License:	GPL v2+
+Version:	2.4.6
+Release:	0.1
+License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
+Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	3ef4250eb889c4f8e99e85601a6d750d
+Source1:	polkit-%{name}-authentication-agent-1.desktop
+Source2:	%{name}-fedora.gschema.override
+Source3:	%{name}-fedora-20.gschema.override
+Patch0:		background.patch
+Patch1:		autostart.patch
+Patch2:		%{name}-settings-apps.patch
+Patch3:		set_wheel.patch
+Patch4:		network-user-connections.patch
+Patch5:		revert_25aef37.patch
+Patch6:		%{name}-gtk-3.14.patch
+Patch7:		default_panal_launcher.patch
+Patch8:		remove_session_bits.patch
+Patch9:		show_brightness_fix.patch
 URL:		http://cinnamon.linuxmint.com/
-Source0:	https://github.com/linuxmint/Cinnamon/tarball/1.4/%{name}-%{version}.tar.gz
-# Source0-md5:	2afb656fb8834571c902ba74f1f5116c
-Source1:	%{name}.desktop
-Source2:	%{name}.session
-Source3:	menu.png
-# Replace mint favorites with fedora gnome-shell defaults
-Patch0:		%{name}-favourite-apps-firefox.patch
-Patch1:		menu.patch
-Patch2:		settings.patch
-Patch3:		logout_theme.patch
-Patch4:		gir_bluetooth.patch
-BuildRequires:	GConf2
+BuildRequires:	GConf2-devel
 BuildRequires:	NetworkManager-devel
-BuildRequires:	ca-certificates
+BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_version}
+BuildRequires:	cinnamon-menus-devel
+BuildRequires:	cjs-devel >= %{cjs_version}
 BuildRequires:	clutter-devel >= %{clutter_version}
 BuildRequires:	dbus-glib-devel
 BuildRequires:	desktop-file-utils
-BuildRequires:	evolution-data-server-devel >= %{eds_version}
-BuildRequires:	gjs-devel >= 0.7.14-6
-BuildRequires:	glib2-devel
-BuildRequires:	gnome-desktop-devel
-BuildRequires:	gnome-menus-devel >= 3.1.5-2.fc16
+BuildRequires:	gnome-menus-devel
 BuildRequires:	gobject-introspection >= %{gobject_introspection_version}
 BuildRequires:	json-glib-devel >= %{json_glib_version}
 BuildRequires:	polkit-devel
-BuildRequires:	telepathy-glib-devel
-BuildRequires:	telepathy-logger-devel >= 0.2.6
 BuildRequires:	udev-glib-devel
 BuildRequires:	upower-devel
 # for screencast recorder functionality
-BuildRequires:	folks-devel
 BuildRequires:	gstreamer-devel
-BuildRequires:	gtk+3-devel
 BuildRequires:	intltool
 BuildRequires:	libcanberra-devel
 BuildRequires:	libcroco-devel
-# for barriers
-BuildRequires:	xorg-lib-libXfixes-devel >= 5.0
+BuildRequires:	libgnome-keyring-devel
+BuildRequires:	libsoup-devel
 # used in unused BigThemeImage
 BuildRequires:	librsvg-devel
 BuildRequires:	muffin-devel >= %{muffin_version}
 BuildRequires:	pulseaudio-devel
-%ifnarch s390 s390x
-#BuildRequires:	gnome-bluetooth >= 2.91
-#BuildRequires:	gnome-bluetooth-libs-devel >= 2.91
-%endif
 # Bootstrap requirements
 BuildRequires:	gnome-common
 BuildRequires:	gtk-doc
+# mediia keys
+BuildRequires:	colord-devel
+BuildRequires:	lcms2-devel
+BuildRequires:	libnotify-devel
+BuildRequires:	libwacom-devel
+BuildRequires:	xorg-driver-input-wacom-devel
+BuildRequires:	xorg-lib-libXtst-devel
 Requires:	gnome-menus >= 3.0.0-2
+Requires:	muffin >= %{muffin_version}
 # wrapper script uses to restart old GNOME session if run --replace
 # from the command line
 Requires:	gobject-introspection >= %{gobject_introspection_version}
 # needed for loading SVG's via gdk-pixbuf
-Requires:	librsvg
+Requires:	librsvg2
 # needed as it is now split from Clutter
 Requires:	json-glib >= %{json_glib_version}
-# might be still be needed.
-Requires:	muffin >= %{muffin_version}
 Requires:	polkit >= 0.100
 Requires:	upower
 # needed for session files
-Requires:	gnome-session
+Requires:	cinnamon-session
 # needed for schemas
 Requires:	at-spi2-atk
-Requires(pre):	GConf2
-Requires(post):	GConf2
-Requires(preun):	GConf2
 # needed for on-screen keyboard
 Requires:	caribou
+# needed for the user menu
+Requires:	accountsservice-libs
 # needed for settings
+Requires:	PyPAM
+Requires:	cinnamon-control-center
+Requires:	cinnamon-translations
+Requires:	mintlocale
+Requires:	opencv-python
 Requires:	python-dbus
+Requires:	python-gnome-gconf
+Requires:	python-lxml
+Requires:	python-pexpect
+Requires:	python-pillow
 Requires:	python-pygobject
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+# RequiredComponents in the session files
+Requires:	cinnamon-screensaver
+Requires:	nemo
+
+# metacity is needed for fallback
+Requires:	metacity
+Requires:	tint2
+
+# needed for theme overrides
+Requires:	gnome-themes
+Requires:	nimbus-icon-theme
+Requires:	zukitwo-gtk2-theme
+Requires:	zukitwo-gtk3-theme
+
+# required for keyboard applet
+Requires:	gucharmap
+
+# required for network applet
+Requires:	network-manager-applet
+Requires:	nm-connection-editor
+
+# required for looking glass
+Requires:	python-inotify
+
+Provides:	desktop-notification-daemon
+Obsoletes:	cinnamon <= 1.8.0-1
+Obsoletes:	cinnamon-2d
+Obsoletes:	cinnamon-menu-editor
+Obsoletes:	cinnamon-settings
 
 %description
 Cinnamon is a Linux desktop which provides advanced innovative
 features and a traditional user experience.
 
-The desktop layout is similar to Gnome 2.
-
-The underlying technology is forked from Gnome Shell.
-
-The emphasis is put on making users feel at home and providing them
-with an easy to use and comfortable desktop experience.
+The desktop layout is similar to Gnome 2. The underlying technology is
+forked from Gnome Shell. The emphasis is put on making users feel at
+home and providing them with an easy to use and comfortable desktop
+experience.
 
 %prep
-%setup -q -n linuxmint-Cinnamon-%{_internel_version}
+%setup -q -n Cinnamon-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+
+sed -i -e 's@gksu@pkexec@g'  files/usr/bin/cinnamon-settings-users
 
 # cleanup backups after patching
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
-# make changes for settings move to %{_datadir}
-mv files%{_prefix}/lib/cinnamon-settings files%{_datadir}
-sed -i -e 's@/usr/lib@/usr/share@g' files/usr/bin/cinnamon-settings \
-	files%{_datadir}/cinnamon-settings/cinnamon-settings.py
-
-# make changes for menu-editor move to %{_datadir}
-mv files%{_prefix}/lib/cinnamon-menu-editor files%{_datadir}
-rm -rf files%{_prefix}/lib
-sed -i -e 's@/usr/lib@/usr/share@g' files/usr/bin/cinnamon-menu-editor \
-	files%{_datadir}/cinnamon-menu-editor/Alacarte/MainWindow.py
-
-# replace menu image
-rm -f data/theme/menu.png
-cp %{SOURCE3} data/theme/menu.png
-
-# remove and replace the session files as they don't work with fedora (can't be bothered to patch it)
-rm -f files%{_bindir}/gnome-session-cinnamon  \
-	files%{_datadir}/xsessions/cinnamon.desktop \
-	files%{_datadir}/gnome-session/sessions/cinnamon.session
-cp %{SOURCE1} files%{_datadir}/xsessions/
-cp %{SOURCE2} files%{_datadir}/gnome-session/sessions/
-
-# files replaced with fedora files
-rm -f files%{_datadir}/desktop-directories/cinnamon-menu-applications.directory \
-	files%{_datadir}/desktop-directories/cinnamon-utility.directory \
-	files%{_datadir}/desktop-directories/cinnamon-utility-accessibility.directory \
-	files%{_datadir}/desktop-directories/cinnamon-development.directory \
-	files%{_datadir}/desktop-directories/cinnamon-education.directory \
-	files%{_datadir}/desktop-directories/cinnamon-game.directory \
-	files%{_datadir}/desktop-directories/cinnamon-graphics.directory \
-	files%{_datadir}/desktop-directories/cinnamon-network.directory \
-	files%{_datadir}/desktop-directories/cinnamon-audio-video.directory \
-	files%{_datadir}/desktop-directories/cinnamon-office.directory \
-	files%{_datadir}/desktop-directories/cinnamon-system-tools.directory \
-	files%{_datadir}/desktop-directories/cinnamon-other.directory
-# adjust font size
-sed -i -e 's,font-size: 9.5pt,font-size: 10pt,g' data/theme/cinnamon.css
-sed -i -e 's,font-size: 9pt,font-size: 10pt,g' data/theme/cinnamon.css
-sed -i -e 's,font-size: 8.5pt,font-size: 10pt,g' data/theme/cinnamon.css
-sed -i -e 's,font-size: 8pt,font-size: 10pt,g' data/theme/cinnamon.css
-sed -i -e 's,font-size: 7.5pt,font-size: 10pt,g' data/theme/cinnamon.css
-
-rm -rf debian
-rm configure
-
 %build
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-#CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
+NOCONFIGURE=1 ./autogen.sh
 %configure \
-	--with-ca-certificates=/etc/certs/ca-certificates.crt \
+	--disable-silent-rules \
 	--disable-static \
-	--enable-compile-warnings=yes \
+	--disable-rpath \
+	--disable-schemas-compile \
+	--enable-introspection=yes \
+	--enable-compile-warnings=no
 
-%{__make} V=1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__make} install \
-	GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 \
 	DESTDIR=$RPM_BUILD_ROOT
+
+# Remove shebang from files
+sed -i -e '1{\@^#!%{_bindir}/env python@d}' $RPM_BUILD_ROOT%{_prefix}/lib/cinnamon-settings/*/*.py
+
+# Fix perms
+chmod +x $RPM_BUILD_ROOT%{_prefix}/lib/cinnamon-settings/bin/{install,remove}Schema.py
 
 # Remove .la file
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/cinnamon/libcinnamon.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/cinnamon/libcinnamon-js.la
 
-# Remove firefox plugin
-rm -rf $RPM_BUILD_ROOT%{_libdir}/mozilla
+install -D %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-fedora.gschema.override
 
-desktop-file-install \
-	--add-category="Utility" \
-	--remove-category="DesktopSettings" \
-	--remove-key="Encoding" \
-	--add-only-show-in="GNOME" \
-	--delete-original \
-	--dir=$RPM_BUILD_ROOT%{_desktopdir} \
-	$RPM_BUILD_ROOT%{_desktopdir}/cinnamon-settings.desktop
+# install polkik autostart desktop file
+install -D -p %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 
 desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon.desktop
+desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon2d.desktop
+desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon-settings*.desktop
+desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon-menu-editor.desktop
+desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
 
-#%find_lang %{name}
-touch %{name}.lang
+# fix hardcoded path
+sed -i -e 's@/usr/lib/cinnamon-control-center@%{_libdir}/cinnamon-control-center@g' \
+	$RPM_BUILD_ROOT%{_prefix}/lib/cinnamon-settings/bin/capi.py
+
+# create directory for lang files
+install -d $RPM_BUILD_ROOT%{_datadir}/cinnamon/locale
+
+# to fix man page brp check
+touch $RPM_BUILD_ROOT%{_mandir}/man1/gnome-session.1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%gconf_schema_install cinnamon.schemas
-
-%preun
-%gconf_schema_uninstall cinnamon.schemas
+%update_icon_cache hicolor
 
 %postun
-%glib_compile_schemas
+if [ $1 -eq 0 ]; then
+	%update_icon_cache hicolor
+	%glib_compile_schemas
+fi
 
 %posttrans
+%update_icon_cache hicolor
 %glib_compile_schemas
 
-%files -f %{name}.lang
+%files
 %defattr(644,root,root,755)
-%doc README
+%doc COPYING README NEWS AUTHORS
+/etc/xdg/menus/cinnamon-applications-merged
+/etc/xdg/menus/cinnamon-applications.menu
 %attr(755,root,root) %{_bindir}/cinnamon
-%attr(755,root,root) %{_bindir}/cinnamon-settings
+%attr(755,root,root) %{_bindir}/cinnamon-desktop-editor
 %attr(755,root,root) %{_bindir}/cinnamon-extension-tool
-%{_sysconfdir}/gconf/schemas/cinnamon.schemas
-%{_sysconfdir}/xdg/menus/cinnamon-applications.menu
-%{_sysconfdir}/xdg/menus/cinnamon-settings.menu
-%{_datadir}/desktop-directories/cinnamon-*.directory
-%{_datadir}/glib-2.0/schemas/*.xml
+%attr(755,root,root) %{_bindir}/cinnamon-json-makepot
+%attr(755,root,root) %{_bindir}/cinnamon-launcher
+%attr(755,root,root) %{_bindir}/cinnamon-looking-glass
+%attr(755,root,root) %{_bindir}/cinnamon-menu-editor
+%attr(755,root,root) %{_bindir}/cinnamon-preview-gtk-theme
+%attr(755,root,root) %{_bindir}/cinnamon-screensaver-lock-dialog
+%attr(755,root,root) %{_bindir}/cinnamon-session-cinnamon
+%attr(755,root,root) %{_bindir}/cinnamon-session-cinnamon2d
+%attr(755,root,root) %{_bindir}/cinnamon-settings
+%attr(755,root,root) %{_bindir}/cinnamon-settings-users
+%attr(755,root,root) %{_bindir}/cinnamon-slideshow
+%attr(755,root,root) %{_bindir}/cinnamon2d
+%{_mandir}/man1/cinnamon-extension-tool.1*
+%{_mandir}/man1/cinnamon-launcher.1*
+%{_mandir}/man1/cinnamon-menu-editor.1*
+%{_mandir}/man1/cinnamon-settings.1*
+%{_mandir}/man1/cinnamon.1*
+%{_mandir}/man1/cinnamon2d.1
+%{_mandir}/man1/gnome-session-cinnamon.1
+%{_mandir}/man1/gnome-session-cinnamon2d.1
+%{_mandir}/man1/gnome-session.1
+%{_desktopdir}/cinnamon-menu-editor.desktop
+%{_desktopdir}/cinnamon-settings*.desktop
 %{_desktopdir}/cinnamon.desktop
-%{_desktopdir}/cinnamon-settings.desktop
-%{_datadir}/xsessions/cinnamon.desktop
-%{_datadir}/gnome-session/sessions/cinnamon.session
-
-%dir %{_datadir}/cinnamon
-%{_datadir}/cinnamon/applets
-%{_datadir}/cinnamon/js
-%{_datadir}/cinnamon/search_providers
-%{_datadir}/cinnamon/shaders
-%{_datadir}/cinnamon/theme
-%attr(755,root,root) %{_libdir}/cinnamon/libcinnamon.so
-
-%dir %{_datadir}/cinnamon-settings
-%{_datadir}/cinnamon-settings/cinnamon-settings.py
-%{_datadir}/cinnamon-settings/cinnamon-settings.ui
-%{_datadir}/cinnamon-settings/data
-
-%{_datadir}/dbus-1/services/org.Cinnamon.CalendarServer.service
+%{_desktopdir}/cinnamon2d.desktop
+%{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
 %{_datadir}/dbus-1/services/org.Cinnamon.HotplugSniffer.service
+%{_datadir}/dbus-1/services/org.Cinnamon.Melange.service
+%{_datadir}/dbus-1/services/org.Cinnamon.Slideshow.service
+%{_datadir}/desktop-directories/cinnamon-*.directory
+%{_datadir}/glib-2.0/schemas/cinnamon-fedora.gschema.override
+%{_datadir}/glib-2.0/schemas/org.cinnamon.gschema.xml
+%{_datadir}/cinnamon-session/sessions/cinnamon.session
+%{_datadir}/cinnamon-session/sessions/cinnamon2d.session
+%{_iconsdir}/hicolor/*/categories/*.svg
+%{_iconsdir}/hicolor/*/emblems/cs-*.svg
+%{_datadir}/polkit-1/actions/org.cinnamon.settings-users.policy
+%{_datadir}/xsessions/cinnamon.desktop
+%{_datadir}/xsessions/cinnamon2d.desktop
 
 %dir %{_libdir}/cinnamon
 %{_libdir}/cinnamon/Cinnamon-0.1.typelib
+%{_libdir}/cinnamon/CinnamonJS-0.1.typelib
 %{_libdir}/cinnamon/Gvc-1.0.typelib
 %{_libdir}/cinnamon/St-1.0.typelib
-%attr(755,root,root) %{_libdir}/cinnamon-calendar-server
-%attr(755,root,root) %{_libdir}/cinnamon-perf-helper
-%attr(755,root,root) %{_libdir}/cinnamon-hotplug-sniffer
-%{_mandir}/man1/%{name}.1*
+%{_libdir}/cinnamon/cinnamon-hotplug-sniffer
+%{_libdir}/cinnamon/cinnamon-perf-helper
 
-# i wonder why excluded?
-#%exclude %{_bindir}/cinnamon-menu-editor
-#%exclude %{_datadir}/cinnamon-menu-editor/
-%attr(755,root,root) %{_bindir}/cinnamon-menu-editor
-%dir %{_datadir}/cinnamon-menu-editor
-%dir %{_datadir}/cinnamon-menu-editor/Alacarte
-%{_datadir}/cinnamon-menu-editor/Alacarte/MainWindow.py
-%{_datadir}/cinnamon-menu-editor/Alacarte/MenuEditor.py
-%{_datadir}/cinnamon-menu-editor/Alacarte/__init__.py
-%{_datadir}/cinnamon-menu-editor/Alacarte/config.py
-%{_datadir}/cinnamon-menu-editor/Alacarte/util.py
-%{_datadir}/cinnamon-menu-editor/cinnamon-menu-editor.ui
+%attr(755,root,root) %{_libdir}/cinnamon/libcinnamon-js.so
+%attr(755,root,root) %{_libdir}/cinnamon/libcinnamon.so
+
+%dir %{_datadir}/cinnamon
+%{_datadir}/cinnamon/applets
+%{_datadir}/cinnamon/bumpmaps
+%{_datadir}/cinnamon/desklets
+%{_datadir}/cinnamon/faces
+%{_datadir}/cinnamon/icons
+%{_datadir}/cinnamon/js
+%{_datadir}/cinnamon/search_providers
+%{_datadir}/cinnamon/theme
+%{_datadir}/cinnamon/thumbnails
+
+%{_prefix}/lib/cinnamon-desktop-editor
+%{_prefix}/lib/cinnamon-json-makepot
+%{_prefix}/lib/cinnamon-looking-glass
+%{_prefix}/lib/cinnamon-menu-editor
+%{_prefix}/lib/cinnamon-screensaver-lock-dialog
+%{_prefix}/lib/cinnamon-settings-users
+%dir %{_prefix}/lib/cinnamon-settings
+%dir %{_prefix}/lib/cinnamon-settings/bin
+%{_prefix}/lib/cinnamon-settings/bin/*.ui
+%attr(755,root,root) %{_prefix}/lib/cinnamon-settings/bin/*.py
+%{_prefix}/lib/cinnamon-settings/*.ui
+%{_prefix}/lib/cinnamon-settings/*.py
+%{_prefix}/lib/cinnamon-settings/data
+%{_prefix}/lib/cinnamon-settings/modules
+%{_prefix}/lib/cinnamon-slideshow
