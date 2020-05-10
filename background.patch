@@ -1,5 +1,5 @@
---- a/files/usr/lib/cinnamon-settings/modules/cs_backgrounds.py
-+++ b/files/usr/lib/cinnamon-settings/modules/cs_backgrounds.py
+--- cinnamon-4.4.8/files/usr/share/cinnamon/cinnamon-settings/modules/cs_backgrounds.py.orig
++++ cinnamon-4.4.8/files/usr/share/cinnamon/cinnamon-settings/modules/cs_backgrounds.py
 @@ -198,7 +198,7 @@ class Module:
      def get_system_backgrounds(self):
          picture_list = []
