@@ -85,9 +85,8 @@ Requires:	gnome-themes
 # required for keyboard applet
 Requires:	gucharmap
 
-# required for network applet
+# nm-applet, nm-connection-editor required for network applet
 Requires:	NetworkManager-applet
-Requires:	nm-connection-editor
 
 # required for looking glass
 Requires:	python-inotify
