@@ -5,14 +5,17 @@
 Summary:	Window management and application launching for GNOME
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla GNOME
 Name:		cinnamon
-Version:	4.4.8
+Version:	4.6.0
 Release:	0.1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	4f7901e5f32b4641a4e1388b79821a0d
-Source1:	polkit-%{name}-authentication-agent-1.desktop
-Source2:	%{name}-fedora.gschema.override
+# Source0-md5:	dfe6492acfc82b38acad68d8fbe96a89
+#Source1Download: https://github.com/linuxmint/cinnamon-translations/releases
+Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{version}/cinnamon-translations-%{version}.tar.gz
+# Source1-md5:	2a7f336ad50c2ec8ec4e80a7acf5f899
+Source2:	polkit-%{name}-authentication-agent-1.desktop
+Source3:	%{name}-fedora.gschema.override
 Patch0:		background.patch
 Patch1:		autostart.patch
 Patch3:		set_wheel.patch
@@ -25,7 +28,7 @@ BuildRequires:	at-spi2-atk-devel >= 2.0
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_ver}
-BuildRequires:	cinnamon-menus-devel
+BuildRequires:	cinnamon-menus-devel >= 3.0
 BuildRequires:	cjs-devel >= %{cjs_ver}
 BuildRequires:	dbus-glib-devel
 BuildRequires:	desktop-file-utils
@@ -75,10 +78,6 @@ Requires:	python3-PyPAM
 Requires:	cinnamon-screensaver
 Requires:	nemo
 
-# metacity is needed for fallback
-Requires:	metacity
-Requires:	tint2
-
 # needed for theme overrides
 Requires:	gnome-themes
 
@@ -90,6 +89,13 @@ Requires:	NetworkManager-applet
 
 # required for looking glass
 Requires:	python-inotify
+
+# metacity is needed as fallback for cinnamon
+Suggests:	metacity
+# mate-panel > gnome-panel > tint2
+Suggests:	gnome-panel
+Suggests:	mate-panel
+Suggests:	tint2
 
 Provides:	desktop-notification-daemon
 Obsoletes:	cinnamon-2d
@@ -128,7 +134,7 @@ API documentation for Cinnamon desktop.
 Dokumentacja API środowiska Cinnamon.
 
 %prep
-%setup -q
+%setup -q -a1
 %patch0 -p1
 %patch1 -p1
 %patch3 -p1
@@ -160,6 +166,8 @@ install -d m4
 
 %{__make}
 
+%{__make} -C cinnamon-translations-%{version}
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -168,10 +176,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/cinnamon/libcinnamon.la
 
-install -D %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-fedora.gschema.override
+install -D %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-fedora.gschema.override
 
 # install polkit autostart desktop file
-%{__sed} -e 's,@libexecdir@,%{_libexecdir},' %{SOURCE1} >$RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
+%{__sed} -e 's,@libexecdir@,%{_libexecdir},' %{SOURCE2} >$RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
 
 desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon.desktop
 desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon2d.desktop
@@ -183,11 +191,21 @@ desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authenticati
 #sed -i -e 's@/usr/lib/cinnamon-control-center@%{_libdir}/cinnamon-control-center@g' \
 #	$RPM_BUILD_ROOT%{_prefix}/lib/cinnamon-settings/bin/capi.py
 
-# create directory for lang files
-install -d $RPM_BUILD_ROOT%{_datadir}/cinnamon/locale
-
 # to fix man page brp check
 touch $RPM_BUILD_ROOT%{_mandir}/man1/gnome-session.1
+
+cd cinnamon-translations-%{version}
+for f in usr/share/locale/*/LC_MESSAGES/%{name}.mo ; do
+	install -D "$f" "$RPM_BUILD_ROOT/$f"
+done
+cd ..
+
+# not supported by glibc
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,nap,rue,sco}
+# almost empty version of nb(?) under withdrawn code
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/no
+
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -205,9 +223,9 @@ fi
 %update_icon_cache hicolor
 %glib_compile_schemas
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS README.rst
+%doc AUTHORS README.rst debian/changelog
 %attr(755,root,root) %{_bindir}/cinnamon
 %attr(755,root,root) %{_bindir}/cinnamon-desktop-editor
 %attr(755,root,root) %{_bindir}/cinnamon-file-dialog
