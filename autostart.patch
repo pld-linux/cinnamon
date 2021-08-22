@@ -1,20 +1,20 @@
---- a/files/cinnamon.session.in
-+++ b/files/cinnamon.session.in
-@@ -1,5 +1,5 @@
+--- cinnamon-4.8.6/cinnamon.session.in.orig	2021-01-13 15:22:39.000000000 +0100
++++ cinnamon-4.8.6/cinnamon.session.in	2021-08-22 18:52:43.299051471 +0200
+@@ -1,6 +1,6 @@
  [Cinnamon Session]
  Name=Cinnamon
--RequiredComponents=cinnamon;cinnamon-screensaver;nemo-autostart;nm-applet;cinnamon-killer-daemon;
-+RequiredComponents=cinnamon;cinnamon-screensaver;nemo-autostart;cinnamon-killer-daemon;polkit-cinnamon-authentication-agent-1;
+-RequiredComponents=cinnamon;cinnamon-screensaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;
++RequiredComponents=cinnamon;cinnamon-screensaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;polkit-cinnamon-authentication-agent-1;
  DesktopName=X-Cinnamon
  
-
---- a/files/cinnamon2d.session.in
-+++ b/files/cinnamon2d.session.in
-@@ -1,5 +1,5 @@
+ 
+--- cinnamon-4.8.6/cinnamon2d.session.in.orig	2021-01-13 15:22:39.000000000 +0100
++++ cinnamon-4.8.6/cinnamon2d.session.in	2021-08-22 18:53:13.015557149 +0200
+@@ -1,6 +1,6 @@
  [Cinnamon Session]
  Name=Cinnamon (Software Rendering)
--RequiredComponents=cinnamon2d;cinnamon-screensaver;nemo-autostart;nm-applet;cinnamon-killer-daemon;
-+RequiredComponents=cinnamon2d;cinnamon-screensaver;nemo-autostart;cinnamon-killer-daemon;polkit-cinnamon-authentication-agent-1;
+-RequiredComponents=cinnamon2d;cinnamon-screensaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;
++RequiredComponents=cinnamon2d;cinnamon-screensaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;polkit-cinnamon-authentication-agent-1;
  DesktopName=X-Cinnamon
  
-
+ 
