@@ -79,7 +79,7 @@ Requires:	caribou
 # needed for the user menu
 Requires:	accountsservice-libs
 Requires:	cinnamon-control-center
-Requires:	cinnamon-translations
+Requires:	cinnamon-nemo
 Requires:	mintlocale
 Requires:	python-dbus
 Requires:	python-pexpect
@@ -89,7 +89,6 @@ Requires:	python-pygobject3
 Requires:	python3-PyPAM
 # RequiredComponents in the session files
 Requires:	cinnamon-screensaver
-Requires:	nemo
 
 # needed for theme overrides
 Requires:	gnome-themes
@@ -114,6 +113,7 @@ Provides:	desktop-notification-daemon
 Obsoletes:	cinnamon-2d < 2.4
 Obsoletes:	cinnamon-menu-editor < 2.4
 Obsoletes:	cinnamon-settings < 2.4
+Obsoletes:	cinnamon-translations < 4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
