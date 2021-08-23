@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	apidocs	# API documentation
 
-%define	translations_version	4.8.3
+%define	translations_version	5.0.2
 %define	cinnamon_desktop_ver	2.4.0
 %define	cinnamon_menus_ver	4.8.0
 %define	cjs_ver			4.8.0
@@ -12,16 +12,16 @@
 Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
-Version:	4.8.6
+Version:	5.0.5
 Release:	0.1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/releases
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	da28fad44089e1668f9d428f2d708e28
+# Source0-md5:	ca117de8cf689eb5dfa8b3f052a2bc70
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/releases
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	a68529f0f1a6c7f8b693a81095bece96
+# Source1-md5:	6e40b7f545138907148af3377e628d63
 Source2:	polkit-%{name}-authentication-agent-1.desktop
 Source3:	%{name}-fedora.gschema.override
 Patch0:		background.patch
@@ -194,6 +194,9 @@ for f in usr/share/locale/*/LC_MESSAGES/%{name}.mo ; do
 done
 cd ..
 
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
+
 # not supported by glibc
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,nap,rue,sco}
 # almost empty version of nb(?) under withdrawn code
@@ -221,6 +224,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS README.rst debian/changelog
 %attr(755,root,root) %{_bindir}/cinnamon
+%attr(755,root,root) %{_bindir}/cinnamon-dbus-command
 %attr(755,root,root) %{_bindir}/cinnamon-desktop-editor
 %attr(755,root,root) %{_bindir}/cinnamon-file-dialog
 %attr(755,root,root) %{_bindir}/cinnamon-install-spice
@@ -236,6 +240,7 @@ fi
 %attr(755,root,root) %{_bindir}/cinnamon-settings
 %attr(755,root,root) %{_bindir}/cinnamon-settings-users
 %attr(755,root,root) %{_bindir}/cinnamon-slideshow
+%attr(755,root,root) %{_bindir}/cinnamon-spice-updater
 %attr(755,root,root) %{_bindir}/cinnamon-subprocess-wrapper
 %attr(755,root,root) %{_bindir}/cinnamon-xlet-makepot
 %attr(755,root,root) %{_bindir}/cinnamon2d
@@ -248,12 +253,12 @@ fi
 %{_libdir}/cinnamon/St-1.0.typelib
 %attr(755,root,root) %{_libexecdir}/cinnamon-hotplug-sniffer
 %attr(755,root,root) %{_libexecdir}/cinnamon-perf-helper
+%{py3_sitedir}/cinnamon
 /etc/xdg/menus/cinnamon-applications-merged
 /etc/xdg/menus/cinnamon-applications.menu
 %dir %{_datadir}/cinnamon
 %{_datadir}/cinnamon/applets
 %{_datadir}/cinnamon/bumpmaps
-%attr(755,root,root) %{_datadir}/cinnamon/cinnamon-dbus-command
 %{_datadir}/cinnamon/cinnamon-desktop-editor
 %{_datadir}/cinnamon/cinnamon-looking-glass
 %{_datadir}/cinnamon/cinnamon-menu-editor
@@ -294,9 +299,9 @@ fi
 %{_desktopdir}/cinnamon.desktop
 %{_desktopdir}/cinnamon2d.desktop
 %{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
-%{_iconsdir}/hicolor/scalable/actions/caps-lock*-symbolic.svg
+%{_iconsdir}/hicolor/scalable/actions/cinnamon-caps-lock-*symbolic.svg
+%{_iconsdir}/hicolor/scalable/actions/cinnamon-num-lock-*symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/list-edit-symbolic.svg
-%{_iconsdir}/hicolor/scalable/actions/num-lock*-symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/pan-*-symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/pan-*-symbolic-rtl.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon.svg
