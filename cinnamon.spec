@@ -56,6 +56,7 @@ BuildRequires:	pkgconfig >= 1:0.22
 BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	rpm-build >= 4.6
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	startup-notification-devel >= 0.11
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXfixes-devel
