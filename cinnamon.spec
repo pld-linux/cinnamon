@@ -9,8 +9,8 @@
 %define	gi_ver			1.34.2
 %define	glib_ver		1:2.52.0
 %define	muffin_version		4.0.3
-Summary:	Window management and application launching for GNOME
-Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla GNOME
+Summary:	Window management and application launching for Cinnamon
+Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
 Version:	4.8.6
 Release:	0.1
