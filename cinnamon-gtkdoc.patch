@@ -1,0 +1,9 @@
+--- cinnamon-5.8.2/docs/reference/cinnamon/meson.build.orig	2023-06-14 09:28:16.000000000 +0200
++++ cinnamon-5.8.2/docs/reference/cinnamon/meson.build	2023-06-17 19:57:50.497306746 +0200
+@@ -1,6 +1,5 @@
+ ignore = [
+     'cinnamon-recorder-src.h',
+-    'cinnamon-recorder.h',
+     st_headers,
+     st_private_headers,
+     tray_headers,

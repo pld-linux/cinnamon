@@ -1,0 +1,2 @@
+[org.cinnamon]
+favorite-apps=['firefox.desktop', 'org.gnome.Packages.desktop', 'cinnamon-settings.desktop', 'org.gnome.Terminal.desktop', 'nemo.desktop']

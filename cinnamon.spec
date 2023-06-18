@@ -2,32 +2,36 @@
 # Conditional build:
 %bcond_without	apidocs	# API documentation
 
-%define	translations_version	5.0.2
+%define	translations_version	5.8.1
 %define	cinnamon_desktop_ver	2.4.0
 %define	cinnamon_menus_ver	4.8.0
 %define	cjs_ver			4.8.0
 %define	gi_ver			1.34.2
 %define	glib_ver		1:2.52.0
-%define	muffin_version		4.0.3
+%define	muffin_ver		5.2.0
 Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
-Version:	5.0.5
+Version:	5.8.2
 Release:	0.1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
-#Source0Download: https://github.com/linuxmint/Cinnamon/releases
+#Source0Download: https://github.com/linuxmint/Cinnamon/tags
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	ca117de8cf689eb5dfa8b3f052a2bc70
-#Source1Download: https://github.com/linuxmint/cinnamon-translations/releases
+# Source0-md5:	671eebd8bd27441ddd98b6438794c906
+#Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	6e40b7f545138907148af3377e628d63
+# Source1-md5:	b9ea707443c81e4340b0cb219d289130
 Source2:	polkit-%{name}-authentication-agent-1.desktop
-Source3:	%{name}-fedora.gschema.override
+Source3:	%{name}-common.gschema.override
+Source4:	%{name}-apps.gschema.override
 Patch0:		background.patch
 Patch1:		autostart.patch
+Patch2:		%{name}-gtkdoc.patch
 Patch3:		set_wheel.patch
+Patch4:		fix_path.patch
 Patch5:		revert_25aef37.patch
+Patch6:		%{name}-menu.patch
 Patch7:		default_panal_launcher.patch
 URL:		https://github.com/linuxmint/Cinnamon
 BuildRequires:	NetworkManager-devel
@@ -46,10 +50,8 @@ BuildRequires:	gtk+3-devel >= 3.12.0
 BuildRequires:	gstreamer-devel >= 1.0
 BuildRequires:	gtk-doc >= 1.15
 BuildRequires:	intltool >= 0.40
-BuildRequires:	libcroco-devel >= 0.6.2
-BuildRequires:	libsoup-devel >= 2.4
 BuildRequires:	libxml2-devel >= 2.0
-BuildRequires:	meson >= 0.46.0
+BuildRequires:	meson >= 0.47.0
 BuildRequires:	muffin-devel >= %{muffin_ver}
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig >= 1:0.22
@@ -57,7 +59,7 @@ BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
-BuildRequires:	startup-notification-devel >= 0.11
+BuildRequires:	xapps-devel >= 2.6.0
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXfixes-devel
 Requires:	glib2 >= %{glib_ver}
@@ -68,6 +70,8 @@ Requires:	gobject-introspection >= %{gi_ver}
 # needed for loading SVG's via gdk-pixbuf
 Requires:	librsvg >= 2.0
 Requires:	polkit >= 0.100
+# required by polkit-cinnamon-authentication-agent-1.desktop
+Requires:	polkit-gnome
 # through UPowerGlib typelib
 Requires:	upower
 # needed for session files
@@ -91,7 +95,7 @@ Requires:	python3-PyPAM
 Requires:	cinnamon-screensaver
 
 # needed for theme overrides
-Requires:	gnome-themes
+Requires:	gnome-backgrounds
 
 # required for keyboard applet
 Requires:	gucharmap
@@ -149,8 +153,11 @@ Dokumentacja API środowiska Cinnamon.
 %setup -q -a1
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch5 -p1
+%patch6 -p1
 %patch7 -p1
 
 # cleanup backups after patching
@@ -170,7 +177,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %ninja_install -C build
 
-install -D %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-fedora.gschema.override
+install -Dp %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-common.gschema.override
+install -Dp %{SOURCE4} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-apps.gschema.override
 
 # install polkit autostart desktop file
 %{__sed} -e 's,@libexecdir@,%{_libexecdir},' %{SOURCE2} >$RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
@@ -185,17 +193,20 @@ desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authenticati
 #sed -i -e 's@/usr/lib/cinnamon-control-center@%{_libdir}/cinnamon-control-center@g' \
 #	$RPM_BUILD_ROOT%{_prefix}/lib/cinnamon-settings/bin/capi.py
 
-# to fix man page brp check
-touch $RPM_BUILD_ROOT%{_mandir}/man1/gnome-session.1
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
+
+# no headers
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/gir-1.0/{Cinnamon-0.1,St-1.0}.gir
+
+# to fix man page brp check (note: do not package)
+touch $RPM_BUILD_ROOT%{_mandir}/man1/cinnamon-session.1
 
 cd cinnamon-translations-%{translations_version}
 for f in usr/share/locale/*/LC_MESSAGES/%{name}.mo ; do
-	install -D "$f" "$RPM_BUILD_ROOT/$f"
+	install -Dp "$f" "$RPM_BUILD_ROOT/$f"
 done
 cd ..
-
-%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
-%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
 
 # not supported by glibc
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,nap,rue,sco}
@@ -224,9 +235,13 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS README.rst debian/changelog
 %attr(755,root,root) %{_bindir}/cinnamon
+%attr(755,root,root) %{_bindir}/cinnamon-calendar-server
+%attr(755,root,root) %{_bindir}/cinnamon-close-dialog
 %attr(755,root,root) %{_bindir}/cinnamon-dbus-command
 %attr(755,root,root) %{_bindir}/cinnamon-desktop-editor
+%attr(755,root,root) %{_bindir}/cinnamon-display-changes-dialog
 %attr(755,root,root) %{_bindir}/cinnamon-file-dialog
+%attr(755,root,root) %{_bindir}/cinnamon-hover-click
 %attr(755,root,root) %{_bindir}/cinnamon-install-spice
 %attr(755,root,root) %{_bindir}/cinnamon-json-makepot
 %attr(755,root,root) %{_bindir}/cinnamon-killer-daemon
@@ -251,9 +266,10 @@ fi
 %attr(755,root,root) %{_libdir}/cinnamon/libst.so
 %{_libdir}/cinnamon/Cinnamon-0.1.typelib
 %{_libdir}/cinnamon/St-1.0.typelib
+%attr(755,root,root) %{_libexecdir}/cinnamon-calendar-server.py
 %attr(755,root,root) %{_libexecdir}/cinnamon-hotplug-sniffer
 %attr(755,root,root) %{_libexecdir}/cinnamon-perf-helper
-%{py3_sitedir}/cinnamon
+%{py3_sitescriptdir}/cinnamon
 /etc/xdg/menus/cinnamon-applications-merged
 /etc/xdg/menus/cinnamon-applications.menu
 %dir %{_datadir}/cinnamon
@@ -271,6 +287,7 @@ fi
 %attr(755,root,root) %{_datadir}/cinnamon/cinnamon-settings/xlet-settings.py
 %{_datadir}/cinnamon/cinnamon-settings/config.py
 %{_datadir}/cinnamon/cinnamon-settings/icons
+%{_datadir}/cinnamon/cinnamon-settings/*.svg
 %{_datadir}/cinnamon/cinnamon-settings/*.ui
 %{_datadir}/cinnamon/cinnamon-slideshow
 %{_datadir}/cinnamon/desklets
@@ -279,6 +296,7 @@ fi
 %{_datadir}/cinnamon/js
 %{_datadir}/cinnamon/search_providers
 %{_datadir}/cinnamon/sounds
+%{_datadir}/cinnamon/styles.d
 %{_datadir}/cinnamon/theme
 %{_datadir}/cinnamon/thumbnails
 %{_datadir}/cinnamon-session/sessions/cinnamon.session
@@ -286,8 +304,11 @@ fi
 %{_datadir}/dbus-1/services/org.Cinnamon.HotplugSniffer.service
 %{_datadir}/dbus-1/services/org.Cinnamon.Melange.service
 %{_datadir}/dbus-1/services/org.Cinnamon.Slideshow.service
+%{_datadir}/dbus-1/services/org.cinnamon.CalendarServer.service
 %{_datadir}/desktop-directories/cinnamon-*.directory
-%{_datadir}/glib-2.0/schemas/cinnamon-fedora.gschema.override
+%{_datadir}/glib-2.0/schemas/cinnamon-apps.gschema.override
+%{_datadir}/glib-2.0/schemas/cinnamon-common.gschema.override
+%{_datadir}/glib-2.0/schemas/org.cinnamon.gestures.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.cinnamon.gschema.xml
 %{_datadir}/polkit-1/actions/org.cinnamon.settings-users.policy
 %{_datadir}/xsessions/cinnamon.desktop
@@ -299,6 +320,7 @@ fi
 %{_desktopdir}/cinnamon.desktop
 %{_desktopdir}/cinnamon2d.desktop
 %{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
+%{_iconsdir}/hicolor/24x24/actions/cinnamon-hc-*-click.png
 %{_iconsdir}/hicolor/scalable/actions/cinnamon-caps-lock-*symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/cinnamon-num-lock-*symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/list-edit-symbolic.svg
@@ -309,6 +331,7 @@ fi
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-virtual-keyboard.svg
 %{_iconsdir}/hicolor/scalable/apps/removable-drives.svg
+%{_iconsdir}/hicolor/scalable/categories/cinnamon-all-applications-symbolic.svg
 %{_iconsdir}/hicolor/scalable/categories/cs-*.svg
 %{_iconsdir}/hicolor/scalable/devices/audio-speaker-*.svg
 %{_iconsdir}/hicolor/scalable/devices/audio-subwoofer.svg
@@ -321,10 +344,10 @@ fi
 %{_mandir}/man1/cinnamon-menu-editor.1*
 %{_mandir}/man1/cinnamon-screensaver-lock-dialog.1*
 %{_mandir}/man1/cinnamon-settings.1*
-%{_mandir}/man1/cinnamon2d.1
-%{_mandir}/man1/gnome-session-cinnamon.1
-%{_mandir}/man1/gnome-session-cinnamon2d.1
-%{_mandir}/man1/gnome-session.1
+%{_mandir}/man1/cinnamon-session-cinnamon.1*
+%{_mandir}/man1/cinnamon-session-cinnamon2d.1*
+%{_mandir}/man1/cinnamon2d.1*
+%exclude %{_mandir}/man1/cinnamon-session.1
 
 %if %{with apidocs}
 %files apidocs

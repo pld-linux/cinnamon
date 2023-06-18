@@ -1,12 +1,11 @@
---- a/files/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org/settings-schema.json
-+++ b/files/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org/settings-schema.json
-@@ -142,7 +142,7 @@
+--- cinnamon-5.8.1/files/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org/settings-schema.json.orig	2023-06-14 06:23:56.383553556 +0200
++++ cinnamon-5.8.1/files/usr/share/cinnamon/applets/grouped-window-list@cinnamon.org/settings-schema.json	2023-06-14 06:25:47.438575265 +0200
+@@ -137,7 +137,7 @@
    },
    "pinned-apps": {
      "type": "generic",
--    "default": ["firefox.desktop", "org.gnome.Terminal.desktop", "nemo.desktop"]
-+    "default": ["firefox.desktop", "mozilla-thunderbird.desktop", "org.gnome.Terminal.desktop", "nemo.desktop"]
+-    "default": ["nemo.desktop", "firefox.desktop", "org.gnome.Terminal.desktop"]
++    "default": ["nemo.desktop", "firefox.desktop", "thunderbird.desktop", "org.gnome.Terminal.desktop"]
    },
    "group-apps": {
      "type": "checkbox",
-

@@ -1,8 +1,6 @@
-Index: Cinnamon-3.6.6/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py
-===================================================================
---- Cinnamon-3.6.6.orig/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py
-+++ Cinnamon-3.6.6/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py
-@@ -53,10 +53,9 @@
+--- cinnamon-5.8.1/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py.orig	2023-06-14 06:31:31.876936429 +0200
++++ cinnamon-5.8.1/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py	2023-06-14 06:25:14.346681196 +0200
+@@ -82,10 +82,9 @@ class GroupDialog (Gtk.Dialog):
              print(detail)
  
      def _on_entry_changed(self, entry):
@@ -15,7 +13,7 @@ Index: Cinnamon-3.6.6/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-
              self.set_response_sensitive(Gtk.ResponseType.OK, False)
          else:
              entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
-@@ -367,9 +366,9 @@
+@@ -397,9 +396,9 @@ class NewUserDialog(Gtk.Dialog):
          fullname = self.realname_entry.get_text()
          username = self.username_entry.get_text()
          valid = True
@@ -25,6 +23,5 @@ Index: Cinnamon-3.6.6/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-
 -            self.username_entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("Invalid username"))
 +            self.username_entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("The username cannot contain space characters"))
              valid = False
-         else:
-             self.username_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
-
+         elif self.user_exists(username):
+             self.username_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "dialog-warning-symbolic")

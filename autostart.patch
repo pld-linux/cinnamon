@@ -4,7 +4,7 @@
  [Cinnamon Session]
  Name=Cinnamon
 -RequiredComponents=cinnamon;org.cinnamon.ScreenSaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;
-+RequiredComponents=cinnamon;org.cinnamon.ScreenSaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;polkit-cinnamon-authentication-agent-1;
++RequiredComponents=cinnamon;org.cinnamon.ScreenSaver;polkit-cinnamon-authentication-agent-1;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;
  DesktopName=X-Cinnamon
  
  
@@ -14,7 +14,7 @@
  [Cinnamon Session]
  Name=Cinnamon (Software Rendering)
 -RequiredComponents=cinnamon2d;org.cinnamon.ScreenSaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;
-+RequiredComponents=cinnamon2d;org.cinnamon.ScreenSaver;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;polkit-cinnamon-authentication-agent-1;
++RequiredComponents=cinnamon2d;org.cinnamon.ScreenSaver;polkit-cinnamon-authentication-agent-1;nemo-autostart;@REQUIRED@cinnamon-killer-daemon;
  DesktopName=X-Cinnamon
  
  
