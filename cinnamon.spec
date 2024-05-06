@@ -1,8 +1,12 @@
+# TODO:
+# - fulfill dependencies
+# -- python3 pampy or pam module - `import pam` or `import PAM`
+# -- mintlocale (what for?)
 #
 # Conditional build:
 %bcond_without	apidocs	# API documentation
 
-%define	translations_version	5.8.1
+%define	translations_version	6.0.2
 %define	cinnamon_desktop_ver	2.4.0
 %define	cinnamon_menus_ver	4.8.0
 %define	cjs_ver			4.8.0
@@ -12,16 +16,16 @@
 Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
-Version:	5.8.2
+Version:	6.0.4
 Release:	0.1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	671eebd8bd27441ddd98b6438794c906
+# Source0-md5:	dd18dcb7d39a9278e9a1613091dd6298
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	b9ea707443c81e4340b0cb219d289130
+# Source1-md5:	36552df46587be4e32ac311b8d7084e4
 Source2:	polkit-%{name}-authentication-agent-1.desktop
 Source3:	%{name}-common.gschema.override
 Source4:	%{name}-apps.gschema.override
@@ -51,7 +55,7 @@ BuildRequires:	gstreamer-devel >= 1.0
 BuildRequires:	gtk-doc >= 1.15
 BuildRequires:	intltool >= 0.40
 BuildRequires:	libxml2-devel >= 2.0
-BuildRequires:	meson >= 0.47.0
+BuildRequires:	meson >= 0.56.0
 BuildRequires:	muffin-devel >= %{muffin_ver}
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig >= 1:0.22
@@ -85,10 +89,10 @@ Requires:	accountsservice-libs
 Requires:	cinnamon-control-center
 Requires:	cinnamon-nemo
 Requires:	mintlocale
-Requires:	python-dbus
-Requires:	python-pexpect
-Requires:	python-pillow
-Requires:	python-pygobject3
+Requires:	python3-dbus
+Requires:	python3-pexpect
+Requires:	python3-pillow
+Requires:	python3-pygobject3
 # needed for settings (cinnamon-settings/modules/cs_user.py)
 Requires:	python3-PyPAM
 # RequiredComponents in the session files
@@ -104,7 +108,7 @@ Requires:	gucharmap
 Requires:	NetworkManager-applet
 
 # required for looking glass
-Requires:	python-inotify
+Requires:	python3-pyinotify
 
 # metacity is needed as fallback for cinnamon
 Suggests:	metacity
@@ -189,15 +193,11 @@ desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon-settings*.desktop
 desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/cinnamon-menu-editor.desktop
 desktop-file-validate $RPM_BUILD_ROOT%{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop
 
-# fix hardcoded path
-#sed -i -e 's@/usr/lib/cinnamon-control-center@%{_libdir}/cinnamon-control-center@g' \
-#	$RPM_BUILD_ROOT%{_prefix}/lib/cinnamon-settings/bin/capi.py
-
-%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
-%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}/cinnamon
+%py3_comp $RPM_BUILD_ROOT%{py3_sitescriptdir}/cinnamon
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitescriptdir}/cinnamon
 
 # no headers
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/gir-1.0/{Cinnamon-0.1,St-1.0}.gir
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/cinnamon/{Cinnamon-0.1,St-1.0}.gir
 
 # to fix man page brp check (note: do not package)
 touch $RPM_BUILD_ROOT%{_mandir}/man1/cinnamon-session.1
@@ -208,8 +208,8 @@ for f in usr/share/locale/*/LC_MESSAGES/%{name}.mo ; do
 done
 cd ..
 
-# not supported by glibc
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,nap,rue,sco}
+# not supported by glibc (as of 2.39)
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,nap,rue,qu,sco}
 # almost empty version of nb(?) under withdrawn code
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/no
 
@@ -300,6 +300,7 @@ fi
 %{_datadir}/cinnamon/theme
 %{_datadir}/cinnamon/thumbnails
 %{_datadir}/cinnamon-session/sessions/cinnamon.session
+%{_datadir}/cinnamon-session/sessions/cinnamon-wayland.session
 %{_datadir}/cinnamon-session/sessions/cinnamon2d.session
 %{_datadir}/dbus-1/services/org.Cinnamon.HotplugSniffer.service
 %{_datadir}/dbus-1/services/org.Cinnamon.Melange.service
@@ -311,12 +312,15 @@ fi
 %{_datadir}/glib-2.0/schemas/org.cinnamon.gestures.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.cinnamon.gschema.xml
 %{_datadir}/polkit-1/actions/org.cinnamon.settings-users.policy
+%{_datadir}/wayland-sessions/cinnamon-wayland.desktop
+%{_datadir}/xdg-desktop-portal/x-cinnamon-portals.conf
 %{_datadir}/xsessions/cinnamon.desktop
 %{_datadir}/xsessions/cinnamon2d.desktop
 %{_desktopdir}/cinnamon-killer-daemon.desktop
 %{_desktopdir}/cinnamon-menu-editor.desktop
 %{_desktopdir}/cinnamon-onscreen-keyboard.desktop
 %{_desktopdir}/cinnamon-settings*.desktop
+%{_desktopdir}/cinnamon-wayland.desktop
 %{_desktopdir}/cinnamon.desktop
 %{_desktopdir}/cinnamon2d.desktop
 %{_desktopdir}/polkit-cinnamon-authentication-agent-1.desktop

@@ -1,5 +1,5 @@
---- cinnamon-5.8.1/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py.orig	2023-06-08 13:57:26.000000000 +0200
-+++ cinnamon-5.8.1/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py	2023-06-14 06:23:45.924341829 +0200
+--- cinnamon-6.0.4/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py.orig	2024-01-04 19:09:30.000000000 +0100
++++ cinnamon-6.0.4/files/usr/share/cinnamon/cinnamon-settings-users/cinnamon-settings-users.py	2024-05-06 18:21:48.401257121 +0200
 @@ -182,12 +182,11 @@ class EditableEntry (Gtk.Notebook):
  
  class PasswordDialog(Gtk.Dialog):
@@ -39,9 +39,9 @@
              response = dialog.run()
  
      def _on_groups_button_clicked(self, widget):
-@@ -899,11 +891,11 @@ class Module:
+@@ -902,11 +894,11 @@ class Module:
              pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/share/cinnamon/faces/user-generic.png", 48, 48)
-             description = "<b>%s</b>\n%s" % (fullname, username)
+             description = "<b>%s</b>\n%s" % (GLib.markup_escape_text(fullname), GLib.markup_escape_text(username))
              piter = self.users.append(None, [new_user, pixbuf, description])
 -            # Add the user to his/her own group and sudo if Administrator was selected
 +            # Add the user to his/her own group and wheel if Administrator was selected
