@@ -6,7 +6,7 @@
 # Conditional build:
 %bcond_without	apidocs	# API documentation
 
-%define	translations_version	6.0.2
+%define	translations_version	6.2.2
 %define	cinnamon_desktop_ver	2.4.0
 %define	cinnamon_menus_ver	4.8.0
 %define	cjs_ver			4.8.0
@@ -16,16 +16,16 @@
 Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
-Version:	6.0.4
+Version:	6.2.7
 Release:	0.1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	dd18dcb7d39a9278e9a1613091dd6298
+# Source0-md5:	f1096b77c0639e929690cc2f1e9505af
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	36552df46587be4e32ac311b8d7084e4
+# Source1-md5:	ca66b0eadc9416ef66384b3b278554ad
 Source2:	polkit-%{name}-authentication-agent-1.desktop
 Source3:	%{name}-common.gschema.override
 Source4:	%{name}-apps.gschema.override
@@ -93,7 +93,7 @@ Requires:	python3-dbus
 Requires:	python3-pexpect
 Requires:	python3-pillow
 Requires:	python3-pygobject3
-# needed for settings (cinnamon-settings/modules/cs_user.py)
+# or python3-pam; needed for settings (cinnamon-settings/modules/cs_user.py)
 Requires:	python3-PyPAM
 # RequiredComponents in the session files
 Requires:	cinnamon-screensaver
@@ -296,7 +296,6 @@ fi
 %{_datadir}/cinnamon/js
 %{_datadir}/cinnamon/search_providers
 %{_datadir}/cinnamon/sounds
-%{_datadir}/cinnamon/styles.d
 %{_datadir}/cinnamon/theme
 %{_datadir}/cinnamon/thumbnails
 %{_datadir}/cinnamon-session/sessions/cinnamon.session
@@ -334,6 +333,9 @@ fi
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-panel-launcher.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-virtual-keyboard.svg
+%{_iconsdir}/hicolor/scalable/apps/cinnamon-wayland_badge-symbolic.svg
+%{_iconsdir}/hicolor/scalable/apps/cinnamon2d_badge-symbolic.svg
+%{_iconsdir}/hicolor/scalable/apps/cinnamon_badge-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/removable-drives.svg
 %{_iconsdir}/hicolor/scalable/categories/cinnamon-all-applications-symbolic.svg
 %{_iconsdir}/hicolor/scalable/categories/cs-*.svg
