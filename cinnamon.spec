@@ -1,7 +1,3 @@
-# TODO:
-# - fulfill dependencies
-# -- python3 pampy or pam module - `import pam` or `import PAM`
-# -- mintlocale (what for?)
 #
 # Conditional build:
 %bcond_without	apidocs	# API documentation
@@ -17,7 +13,7 @@ Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
 Version:	6.2.7
-Release:	0.1
+Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
@@ -88,7 +84,8 @@ Requires:	caribou
 Requires:	accountsservice-libs
 Requires:	cinnamon-control-center
 Requires:	cinnamon-nemo
-Requires:	mintlocale
+# cinnamon-settings/cinnamon-settings.py, "Languages" and "Input Method"; but it's too heavily bound to apt
+#Requires:	mintlocale
 Requires:	python3-dbus
 Requires:	python3-pexpect
 Requires:	python3-pillow
