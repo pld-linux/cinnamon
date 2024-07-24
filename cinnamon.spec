@@ -13,7 +13,7 @@ Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
 Version:	6.2.7
-Release:	1
+Release:	2
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
@@ -206,7 +206,7 @@ done
 cd ..
 
 # not supported by glibc (as of 2.39)
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,nap,rue,qu,sco}
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,frp,jv,ksw,lmo,mo,nap,rue,qu,sco}
 # almost empty version of nb(?) under withdrawn code
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/no
 
@@ -295,6 +295,7 @@ fi
 %{_datadir}/cinnamon/sounds
 %{_datadir}/cinnamon/theme
 %{_datadir}/cinnamon/thumbnails
+%dir %{_datadir}/cinnamon-session/sessions
 %{_datadir}/cinnamon-session/sessions/cinnamon.session
 %{_datadir}/cinnamon-session/sessions/cinnamon-wayland.session
 %{_datadir}/cinnamon-session/sessions/cinnamon2d.session
