@@ -1,5 +1,5 @@
---- a/files/usr/share/cinnamon/cinnamon-settings/bin/capi.py
-+++ b/files/usr/share/cinnamon/cinnamon-settings/bin/capi.py
+--- cinnamon-6.4.2/files/usr/share/cinnamon/cinnamon-settings/bin/capi.py.orig	2024-12-05 12:58:41.000000000 +0100
++++ cinnamon-6.4.2/files/usr/share/cinnamon/cinnamon-settings/bin/capi.py	2024-12-08 19:46:33.273886993 +0100
 @@ -15,9 +15,7 @@
  # You should have received a copy of the GNU General Public License
  # along with this program.  If not, see http://www.gnu.org/licenses/
@@ -10,25 +10,22 @@
  
  from gi.repository import Gio, GObject
  
-@@ -26,23 +24,7 @@ class CManager:
-     def __init__(self):
+@@ -27,20 +25,7 @@ class CManager:
          self.extension_point = Gio.io_extension_point_register ("cinnamon-control-center-1")
          self.modules = []
--
--        architecture = platform.machine()
+ 
 -        # get the arch-specific triplet, e.g. 'x86_64-linux-gnu' or 'arm-linux-gnueabihf'
 -        # see also: https://wiki.debian.org/Python/MultiArch
 -        triplet = sysconfig.get_config_var('MULTIARCH')
--        paths = ["/usr/lib", f"/usr/lib/{triplet}"]
+-        paths = ["/usr/lib", "/usr/lib64", f"/usr/lib/{triplet}"]
 -
 -        # On x86 archs, iterate through multiple paths
 -        # For instance, on a Mint i686 box, the path is actually /usr/lib/i386-linux-gnu
+-        architecture = platform.machine()
 -        x86archs = ["i386", "i486", "i586", "i686"]
 -        if architecture in x86archs:
 -            for arch in x86archs:
 -                paths += ["/usr/lib/%s" % arch]
--        elif architecture == "x86_64":
--            paths += ["/usr/lib/x86_64", "/usr/lib64"]
 -        else:
 -            paths += ["/usr/lib/%s" % architecture]
 +        paths = ["/usr/lib", "/usr/lib64", "/usr/libx32"]

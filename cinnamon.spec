@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	apidocs	# API documentation
 
-%define	translations_version	6.2.2
+%define	translations_version	6.4.1
 %define	cinnamon_desktop_ver	2.4.0
 %define	cinnamon_menus_ver	4.8.0
 %define	cjs_ver			4.8.0
@@ -12,16 +12,16 @@
 Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
-Version:	6.2.7
-Release:	2
+Version:	6.4.2
+Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	f1096b77c0639e929690cc2f1e9505af
+# Source0-md5:	4b352396d63404a5f814558b157433a9
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	ca66b0eadc9416ef66384b3b278554ad
+# Source1-md5:	2d12def6818b100664081e979343d214
 Source2:	polkit-%{name}-authentication-agent-1.desktop
 Source3:	%{name}-common.gschema.override
 Source4:	%{name}-apps.gschema.override
@@ -34,7 +34,7 @@ Patch5:		revert_25aef37.patch
 Patch6:		%{name}-menu.patch
 Patch7:		default_panal_launcher.patch
 URL:		https://github.com/linuxmint/Cinnamon
-BuildRequires:	NetworkManager-devel
+BuildRequires:	NetworkManager-devel >= 2:1.10.4
 BuildRequires:	OpenGL-devel
 BuildRequires:	at-spi2-atk-devel >= 2.0
 BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_ver}
@@ -50,6 +50,7 @@ BuildRequires:	gtk+3-devel >= 3.12.0
 BuildRequires:	gstreamer-devel >= 1.0
 BuildRequires:	gtk-doc >= 1.15
 BuildRequires:	intltool >= 0.40
+BuildRequires:	libsecret-devel >= 0.18
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	meson >= 0.56.0
 BuildRequires:	muffin-devel >= %{muffin_ver}
@@ -57,11 +58,13 @@ BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig >= 1:0.22
 BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	python3 >= 1:3.2
+BuildRequires:	python3-libsass
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	xapps-devel >= 2.6.0
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXfixes-devel
+Requires:	NetworkManager-libs >= 2:1.10.4
 Requires:	glib2 >= %{glib_ver}
 Requires:	muffin >= %{muffin_ver}
 # wrapper script uses to restart old GNOME session if run --replace
@@ -152,14 +155,14 @@ Dokumentacja API środowiska Cinnamon.
 
 %prep
 %setup -q -a1
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
 
 # cleanup backups after patching
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -233,10 +236,8 @@ fi
 %doc AUTHORS README.rst debian/changelog
 %attr(755,root,root) %{_bindir}/cinnamon
 %attr(755,root,root) %{_bindir}/cinnamon-calendar-server
-%attr(755,root,root) %{_bindir}/cinnamon-close-dialog
 %attr(755,root,root) %{_bindir}/cinnamon-dbus-command
 %attr(755,root,root) %{_bindir}/cinnamon-desktop-editor
-%attr(755,root,root) %{_bindir}/cinnamon-display-changes-dialog
 %attr(755,root,root) %{_bindir}/cinnamon-file-dialog
 %attr(755,root,root) %{_bindir}/cinnamon-hover-click
 %attr(755,root,root) %{_bindir}/cinnamon-install-spice
@@ -327,6 +328,8 @@ fi
 %{_iconsdir}/hicolor/scalable/actions/list-edit-symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/pan-*-symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/pan-*-symbolic-rtl.svg
+%{_iconsdir}/hicolor/scalable/actions/view-conceal-symbolic.svg
+%{_iconsdir}/hicolor/scalable/actions/view-reveal-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-panel-launcher.svg
 %{_iconsdir}/hicolor/scalable/apps/cinnamon-symbolic.svg
