@@ -60,7 +60,7 @@ BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	python3-libsass
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRequires:	xapps-devel >= 2.6.0
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXfixes-devel
