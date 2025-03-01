@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	apidocs	# API documentation
 
-%define	translations_version	6.4.1
+%define	translations_version	6.4.2
 %define	cinnamon_desktop_ver	2.4.0
 %define	cinnamon_menus_ver	4.8.0
 %define	cjs_ver			4.8.0
@@ -12,16 +12,16 @@
 Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
-Version:	6.4.2
+Version:	6.4.8
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
 Source0:	https://github.com/linuxmint/Cinnamon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	4b352396d63404a5f814558b157433a9
+# Source0-md5:	45676295cda5162c68876ef0db2b466d
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	2d12def6818b100664081e979343d214
+# Source1-md5:	2a92606a2dcdc696889f08edd12f6bb6
 Source2:	polkit-%{name}-authentication-agent-1.desktop
 Source3:	%{name}-common.gschema.override
 Source4:	%{name}-apps.gschema.override
@@ -168,18 +168,18 @@ Dokumentacja API środowiska Cinnamon.
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 %build
-%meson build \
+%meson \
 	--default-library=shared \
 	%{?with_apidocs:-Ddocs=true}
 
-%ninja_build -C build
+%meson_build
 
 %{__make} -C cinnamon-translations-%{translations_version}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 install -Dp %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-common.gschema.override
 install -Dp %{SOURCE4} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/cinnamon-apps.gschema.override
