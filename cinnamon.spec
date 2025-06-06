@@ -13,7 +13,7 @@ Summary:	Window management and application launching for Cinnamon
 Summary(pl.UTF-8):	Zarządzanie oknami i uruchamianie aplikacji dla środowiska Cinnamon
 Name:		cinnamon
 Version:	6.4.8
-Release:	3
+Release:	4
 License:	GPL v2+ and LGPL v2+
 Group:		X11/Applications
 #Source0Download: https://github.com/linuxmint/Cinnamon/tags
@@ -94,7 +94,7 @@ Requires:	python3-pexpect
 Requires:	python3-pillow
 Requires:	python3-pygobject3
 # or python3-pam; needed for settings (cinnamon-settings/modules/cs_user.py)
-Requires:	python3-PyPAM
+Requires:	python3-pam
 # RequiredComponents in the session files
 Requires:	cinnamon-screensaver
 
